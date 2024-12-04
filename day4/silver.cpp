@@ -6,7 +6,7 @@
 /*   By: mhuszar <mhuszar@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 16:59:28 by mhuszar           #+#    #+#             */
-/*   Updated: 2024/12/04 18:40:03 by mhuszar          ###   ########.fr       */
+/*   Updated: 2024/12/04 21:02:52 by mhuszar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,80 +40,56 @@ void check_left()
     if (x < 3)
         return ;
     if (grid[y][x] == 'X' && grid[y][x - 1] == 'M' && grid[y][x - 2] == 'A' && grid[y][x - 3] == 'S')
-    {
-        std::cout << "found left" << std::endl;
         res++;
-    }
 }
 void check_right()
 {
     if (x > xdim - 4)
         return ;
     if (grid[y][x] == 'X' && grid[y][x + 1] == 'M' && grid[y][x + 2] == 'A' && grid[y][x + 3] == 'S')
-    {
-        std::cout << "found right" << std::endl;
         res++;
-    }
 }
 void check_up()
 {
     if (y < 3)
         return ;
     if (grid[y][x] == 'X' && grid[y - 1][x] == 'M' && grid[y - 2][x] == 'A' && grid[y - 3][x] == 'S')
-    {
-        std::cout << "found up" << std::endl;
         res++;
-    }
 }
 void check_down()
 {
     if (y > ydim - 4)
         return ;
     if (grid[y][x] == 'X' && grid[y + 1][x] == 'M' && grid[y + 2][x] == 'A' && grid[y + 3][x] == 'S')
-    {
-        std::cout << "found down" << std::endl;
         res++;
-    }
 }
 void check_downright()
 {
     if (y > ydim - 4 || x > xdim - 4)
         return ;
     if (grid[y][x] == 'X' && grid[y + 1][x + 1] == 'M' && grid[y + 2][x + 2] == 'A' && grid[y + 3][x + 3] == 'S')
-    {
-        std::cout << "found downright" << std::endl;
         res++;
-    }
 }
 void check_downleft()
 {
     if (y > ydim - 4 || x < 3)
         return ;
     if (grid[y][x] == 'X' && grid[y + 1][x - 1] == 'M' && grid[y + 2][x - 2] == 'A' && grid[y + 3][x - 3] == 'S')
-    {
-        std::cout << "found downleft" << std::endl;
         res++;
-    }
 }
 void check_upright()
 {
     if (y < 3 || x > xdim - 4)
         return ;
     if (grid[y][x] == 'X' && grid[y - 1][x + 1] == 'M' && grid[y - 2][x + 2] == 'A' && grid[y - 3][x + 3] == 'S')
-    {
-        std::cout << "found upright" << std::endl;
         res++;
-    }
 }
 void check_upleft()
 {
     if (y < 3 || x < 3)
         return ;
     if (grid[y][x] == 'X' && grid[y - 1][x - 1] == 'M' && grid[y - 2][x - 2] == 'A' && grid[y - 3][x - 3] == 'S')
-    {
-        std::cout << "found upleft" << std::endl;
         res++;
-    }
 }
 
 void check_dimensions()

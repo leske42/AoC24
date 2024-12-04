@@ -6,7 +6,7 @@
 /*   By: mhuszar <mhuszar@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 16:59:28 by mhuszar           #+#    #+#             */
-/*   Updated: 2024/12/04 18:56:15 by mhuszar          ###   ########.fr       */
+/*   Updated: 2024/12/04 21:03:28 by mhuszar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,34 +38,22 @@ int x, y = 0;
 void masmas()
 {
     if (grid[y - 1][x - 1] == 'M' && grid[y + 1][x + 1] == 'S' && grid[y - 1][x + 1] == 'M' && grid[y + 1][x - 1] == 'S')
-    {
-        std::cout << "found masmas" << std::endl;
         res++;
-    }
 }
 void samsam()
 {
     if (grid[y - 1][x - 1] == 'S' && grid[y + 1][x + 1] == 'M' && grid[y - 1][x + 1] == 'S' && grid[y + 1][x - 1] == 'M')
-    {
-        std::cout << "found samsam" << std::endl;
         res++;
-    }
 }
 void massam()
 {
     if (grid[y - 1][x - 1] == 'M' && grid[y + 1][x + 1] == 'S' && grid[y - 1][x + 1] == 'S' && grid[y + 1][x - 1] == 'M')
-    {
-        std::cout << "found massam" << std::endl;
         res++;
-    }
 }
 void sammas()
 {
     if (grid[y - 1][x - 1] == 'S' && grid[y + 1][x + 1] == 'M' && grid[y - 1][x + 1] == 'M' && grid[y + 1][x - 1] == 'S')
-    {
-        std::cout << "found sammas" << std::endl;
         res++;
-    }
 }
 
 bool check_safe_frame()

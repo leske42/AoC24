@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   gold.cpp                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mhuszar <mhuszar@student.42vienna.com>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/08 21:46:16 by mhuszar           #+#    #+#             */
+/*   Updated: 2024/12/08 22:02:12 by mhuszar          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -24,6 +36,9 @@ std::vector<std::vector<char> > map2;
 
 int res = 0;
 bool brk = false;
+int og_y, og_x;
+Direction og_dir;
+int xdim, ydim;
 
 Direction rotate(Direction dir)
 {
@@ -81,8 +96,6 @@ void move()
         res++;
         brk = true;
     }
-    //else
-      //  std::cout << map2[player.y][player.x] << std::endl;
     map2[player.y][player.x] = 'X' + player.dir;
     switch (player.dir)
     {
@@ -99,62 +112,18 @@ void move()
             player.x--;
             break;
     }
-    //map2[player.y][player.x] = player.dir;
 }
 
-int main()
+void reset_data()
 {
-    std::ifstream file("input_lukas.txt");
-    
-    std::string line;
-    while (std::getline(file, line))
-    {
-        std::vector<char> row;
-        int i = 0;
-        while (i < line.size())
-        {
-            char c = line[i];
-            row.push_back(c);
-            if (c == '^' || c == '>' || c == 'v' || c == '<')
-            {
-                player.x = i;
-                player.y = map.size();
-                player.dir = (c == '^') ? UP : (c == '>') ? RIGHT : (c == 'v') ? DOWN : LEFT;
-            }
-            i++;
-        }
-        map.push_back(row);
-    }
+    map2 = map;
+    player.x = og_x;
+    player.y = og_y;
+    player.dir = og_dir;
+}
 
-    int ydim = map.size();
-    int xdim = map[0].size();
-    int x = 0;
-    int y = 0;
-    int og_y = player.y;
-    int og_x = player.x;
-    Direction og_dir = player.dir;
-
-    while (y < ydim)
-    {
-        while (x < xdim)
-        {
-            if (x == player.x && y == player.y)
-                goto next;
-            map2 = map;
-            player.x = og_x;
-            player.y = og_y;
-            player.dir = og_dir;
-            map2[y][x] = '0';
-            goto run;
-            next:
-            x++;
-        }
-        x = 0;
-        y++;
-    }
-    goto end;
-
-    run:
+void run_simulation()
+{
     while (player.x >= 0 && player.x < map2[0].size() && player.y >= 0 && player.y < map2.size())
     {
         if (out_of_bounds())
@@ -166,12 +135,64 @@ int main()
         if (brk)
         {
             brk = false;
-            goto next;
+            return;
         }
     }
-    goto next;
+}
 
-    end:
+void parse_map()
+{
+    std::ifstream file("input.txt");
+    std::string line;
+    while (std::getline(file, line))
+    {
+        std::vector<char> row;
+        int i = 0;
+        while (i < line.size())
+        {
+            char c = line[i];
+            row.push_back(c);
+            if (c == '^' || c == '>' || c == 'v' || c == '<')
+            {
+                player.x = og_x = i;
+                player.y = og_y = map.size();
+                player.dir = og_dir = (c == '^') ? UP : (c == '>') ? RIGHT : (c == 'v') ? DOWN : LEFT;
+            }
+            i++;
+        }
+        map.push_back(row);
+    }
+    ydim = map.size();
+    xdim = map[0].size();
+}
 
+/* NOTE
+This solution has a one-off error for both my example
+txt and my inputfile. I thought i messed up some calc
+which i could not find so i just simply added one to
+the solution. But recently i discovered that strangely
+it has no error for Lukas input */
+int main()
+{
+    parse_map();
+    int x = 0;
+    int y = 0;
+    while (y < ydim)
+    {
+        while (x < xdim)
+        {
+            if (x == player.x && y == player.y)
+            {
+                x++;
+                continue;
+            }
+            reset_data();
+            map2[y][x] = '0';
+            run_simulation();
+            x++;
+        }
+        x = 0;
+        y++;
+    }
     std::cout << res << std::endl;
 }

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   silver.cpp                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mhuszar <mhuszar@student.42vienna.com>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/08 21:46:08 by mhuszar           #+#    #+#             */
+/*   Updated: 2024/12/08 22:04:14 by mhuszar          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -20,6 +32,7 @@ struct s_player
 s_player player;
 
 std::vector<std::vector<char>> map;
+int res = 0;
 
 Direction rotate(Direction dir)
 {
@@ -91,10 +104,9 @@ void move()
     map[player.y][player.x] = 'X';
 }
 
-int main()
+void parse_map()
 {
     std::ifstream file("proba.txt");
-    
     std::string line;
     while (std::getline(file, line))
     {
@@ -112,9 +124,12 @@ int main()
             }
             i++;
         }
-    map.push_back(row);
+        map.push_back(row);
     }
+}
 
+void run_simulation()
+{
     while (player.x >= 0 && player.x < map[0].size() && player.y >= 0 && player.y < map.size())
     {
         if (out_of_bounds())
@@ -124,8 +139,10 @@ int main()
         else
             player.dir = rotate(player.dir);
     }
+}
 
-    int res = 0;
+void display_map()
+{
     int x, y;
     x = y = 0;
     while (y < map.size())
@@ -141,5 +158,12 @@ int main()
         x = 0;
         y++;
     }
+}
+
+int main()
+{
+    parse_map();
+    run_simulation();
+    display_map();
     std::cout << res << std::endl;
 }

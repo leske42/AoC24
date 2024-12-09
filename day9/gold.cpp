@@ -6,7 +6,7 @@
 /*   By: mhuszar <mhuszar@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 10:12:49 by mhuszar           #+#    #+#             */
-/*   Updated: 2024/12/09 18:28:24 by mhuszar          ###   ########.fr       */
+/*   Updated: 2024/12/09 18:33:58 by mhuszar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,8 @@ void add_up_dotmap()
     int idx = 0;
     while (idx < dotmap.size())
     {
-        res += dotmap[idx] * idx;
+        if (dotmap[idx] != DOT)
+            res += dotmap[idx] * idx;
         idx++;
     }
 }
@@ -48,14 +49,12 @@ void create_dotmap(Line line)
     int idx = 0;
     while (idx < line.size())
     {
-        if (line[idx].type == SPACE_)
-        {
-            idx++;
-            continue;
-        }
         while (line[idx].value)
         {
-            dotmap.push_back(line[idx].file_idx);
+            if (line[idx].type == SPACE_)
+                dotmap.push_back(DOT);
+            else
+                dotmap.push_back(line[idx].file_idx);
             line[idx].value--;
         }
         idx++;
@@ -111,7 +110,7 @@ void print_dotmap()
 
 int main(void)
 {
-    std::ifstream file("proba.txt");
+    std::ifstream file("input.txt");
     std::string content;
     file >> content;
     std::cout << "Line len: " << content.size() << std::endl; //DEBUGINFO: check if line ends with a file or emtpy space
@@ -139,6 +138,6 @@ int main(void)
     reorganize_line(line);
     create_dotmap(line);
     add_up_dotmap();
-    print_dotmap();
+    // print_dotmap();
     std::cout << res << std::endl;
 }

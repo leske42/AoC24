@@ -6,7 +6,7 @@
 /*   By: mhuszar <mhuszar@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 10:12:49 by mhuszar           #+#    #+#             */
-/*   Updated: 2024/12/09 17:55:50 by mhuszar          ###   ########.fr       */
+/*   Updated: 2024/12/09 18:28:24 by mhuszar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,20 @@
 #include<fstream>
 #include<iostream>
 
-typedef std::vector<std::pair<char, int>> Line;
+enum Type
+{
+    FILE_ = 0,
+    SPACE_
+};
+
+struct s_info
+{
+    int value;
+    int file_idx;
+    Type type;
+};
+
+typedef std::vector<s_info> Line;
 typedef std::vector<int> Dotmap;
 Dotmap dotmap;
 #define DOT 2147483647
@@ -35,16 +48,15 @@ void create_dotmap(Line line)
     int idx = 0;
     while (idx < line.size())
     {
-        if (line[idx].first == -1)
+        if (line[idx].type == SPACE_)
         {
             idx++;
             continue;
         }
-        int amount = line[idx].first - 48;
-        while (amount)
+        while (line[idx].value)
         {
-            dotmap.push_back(line[idx].second);
-            amount--;
+            dotmap.push_back(line[idx].file_idx);
+            line[idx].value--;
         }
         idx++;
     }
@@ -52,23 +64,40 @@ void create_dotmap(Line line)
 
 void reorganize_line(Line& line)
 {
-    int idx = 1;
-    int reverse_idx = line.size() - 1;
-    while (idx <= reverse_idx)
+    int reverse_idx = line.size();
+    while (reverse_idx > 0) //cause 0th is always a file that will never be moved
     {
-        if (line[idx].first >= line[reverse_idx].first)
+        reverse_idx--;
+        if (line[reverse_idx].type == SPACE_)
+            continue;
+        int idx = 0;
+        while (idx < reverse_idx)
         {
-            line[idx] = line[reverse_idx];
-            line[reverse_idx].first = -1;
-            idx += 2;
+            if (line[idx].type == SPACE_ && line[idx].value == line[reverse_idx].value)
+            {
+                line[idx] = line[reverse_idx];
+                line[reverse_idx].type = SPACE_;
+                break;
+            }
+            else if (line[idx].type == SPACE_ && line[idx].value > line[reverse_idx].value)
+            {
+                s_info new_node;
+                new_node.file_idx = -1;
+                new_node.type = SPACE_;
+                new_node.value = line[idx].value - line[reverse_idx].value;
+                line[idx] = line[reverse_idx];
+                line[reverse_idx].type = SPACE_;
+                line.insert(line.begin() + idx + 1, new_node);
+                break;
+            }
+            idx++;
         }
-        reverse_idx -= 2;
     }
-    while (idx < line.size()) //remove all SPC so now we consider line has files only
-    {
-        line[idx].first = -1;
-        idx += 2;
-    }
+    // while (idx < line.size()) //remove all SPC so now we consider line has files only
+    // {
+    //     line[idx].first = -1;
+    //     idx += 2;
+    // }
 }
 
 void print_dotmap()
@@ -91,10 +120,20 @@ int main(void)
     Line line;
     while (idx < content.size())
     {
-        std::pair<char, int> newpair(content[idx], file_idx);
-        line.push_back(newpair);
+        s_info new_block;
+        new_block.value = content[idx] - 48;
         if (idx % 2 == 0)
+        {
+            new_block.file_idx = file_idx;
+            new_block.type = FILE_;
             file_idx++;
+        }
+        else
+        {
+            new_block.file_idx = -1;
+            new_block.type = SPACE_;
+        }
+        line.push_back(new_block);
         idx++;
     }
     reorganize_line(line);

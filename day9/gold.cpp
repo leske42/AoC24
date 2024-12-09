@@ -6,7 +6,7 @@
 /*   By: mhuszar <mhuszar@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 10:12:49 by mhuszar           #+#    #+#             */
-/*   Updated: 2024/12/09 19:30:54 by mhuszar          ###   ########.fr       */
+/*   Updated: 2024/12/09 21:19:36 by mhuszar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,21 +91,19 @@ void reorganize_line()
         if (line[reverse_idx].type == SPACE_)
             continue;
         //we only reach this part if reverse_idx holds a FILE.
-        //now we look for a space that fits the file
-        front_idx = 0;
-        while (front_idx < reverse_idx)
+        front_idx = -1;
+        while (++front_idx < reverse_idx)
         {
-            if (line[front_idx].type == SPACE_ && line[front_idx].value == line[reverse_idx].value)
+            if (line[front_idx].type == SPACE_)
             {
-                replace_node();
+                if (line[front_idx].value == line[reverse_idx].value)
+                    replace_node();
+                else if (line[front_idx].value > line[reverse_idx].value)
+                    insert_node_and_partition_space();
+                else
+                    continue;
                 break;
             }
-            else if (line[front_idx].type == SPACE_ && line[front_idx].value > line[reverse_idx].value)
-            {
-               insert_node_and_partition_space();
-               break;
-            }
-            front_idx++;
         }
     }
 }

@@ -6,7 +6,7 @@
 /*   By: mhuszar <mhuszar@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 10:12:49 by mhuszar           #+#    #+#             */
-/*   Updated: 2024/12/09 10:54:53 by mhuszar          ###   ########.fr       */
+/*   Updated: 2024/12/09 19:14:40 by mhuszar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 typedef std::vector<char> Line;
 typedef std::vector<int> Dotmap;
 Dotmap dotmap;
-#define DOT 2147483647
+#define DOT -1
 size_t res = 0;
 
 void add_up_dotmap()

@@ -6,7 +6,7 @@
 /*   By: mhuszar <mhuszar@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 10:12:49 by mhuszar           #+#    #+#             */
-/*   Updated: 2024/12/09 18:33:58 by mhuszar          ###   ########.fr       */
+/*   Updated: 2024/12/09 19:30:54 by mhuszar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,15 @@ struct s_info
     Type type;
 };
 
+#define DOT -1
 typedef std::vector<s_info> Line;
 typedef std::vector<int> Dotmap;
+Line line;
 Dotmap dotmap;
-#define DOT 2147483647
+
 size_t res = 0;
+int front_idx;
+int reverse_idx;
 
 void add_up_dotmap()
 {
@@ -44,7 +48,7 @@ void add_up_dotmap()
     }
 }
 
-void create_dotmap(Line line)
+void create_dotmap()
 {
     int idx = 0;
     while (idx < line.size())
@@ -61,50 +65,77 @@ void create_dotmap(Line line)
     }
 }
 
-void reorganize_line(Line& line)
+void replace_node()
 {
-    int reverse_idx = line.size();
+    line[front_idx] = line[reverse_idx];
+    line[reverse_idx].type = SPACE_;
+}
+
+void insert_node_and_partition_space()
+{
+    s_info new_node;
+    new_node.file_idx = -1;
+    new_node.type = SPACE_;
+    new_node.value = line[front_idx].value - line[reverse_idx].value;
+    line[front_idx] = line[reverse_idx];
+    line[reverse_idx].type = SPACE_;
+    line.insert(line.begin() + front_idx + 1, new_node);
+}
+
+void reorganize_line()
+{
+    reverse_idx = line.size();
     while (reverse_idx > 0) //cause 0th is always a file that will never be moved
     {
         reverse_idx--;
         if (line[reverse_idx].type == SPACE_)
             continue;
-        int idx = 0;
-        while (idx < reverse_idx)
+        //we only reach this part if reverse_idx holds a FILE.
+        //now we look for a space that fits the file
+        front_idx = 0;
+        while (front_idx < reverse_idx)
         {
-            if (line[idx].type == SPACE_ && line[idx].value == line[reverse_idx].value)
+            if (line[front_idx].type == SPACE_ && line[front_idx].value == line[reverse_idx].value)
             {
-                line[idx] = line[reverse_idx];
-                line[reverse_idx].type = SPACE_;
+                replace_node();
                 break;
             }
-            else if (line[idx].type == SPACE_ && line[idx].value > line[reverse_idx].value)
+            else if (line[front_idx].type == SPACE_ && line[front_idx].value > line[reverse_idx].value)
             {
-                s_info new_node;
-                new_node.file_idx = -1;
-                new_node.type = SPACE_;
-                new_node.value = line[idx].value - line[reverse_idx].value;
-                line[idx] = line[reverse_idx];
-                line[reverse_idx].type = SPACE_;
-                line.insert(line.begin() + idx + 1, new_node);
-                break;
+               insert_node_and_partition_space();
+               break;
             }
-            idx++;
+            front_idx++;
         }
     }
-    // while (idx < line.size()) //remove all SPC so now we consider line has files only
-    // {
-    //     line[idx].first = -1;
-    //     idx += 2;
-    // }
+}
+
+void add_blocks_to_line(std::string& content)
+{
+    int idx = 0;
+    int file_idx = 0;
+    while (idx < content.size())
+    {
+        s_info new_block;
+        new_block.file_idx = -1;
+        new_block.value = content[idx] - 48;
+        if (idx % 2 == 0)
+        {
+            new_block.file_idx = file_idx++;
+            new_block.type = FILE_;
+        }
+        else
+            new_block.type = SPACE_;
+
+        line.push_back(new_block);
+        idx++;
+    }
 }
 
 void print_dotmap()
 {
     for (int idx = 0; idx < dotmap.size(); idx++)
-    {
         std::cout << dotmap[idx];
-    }
     std::cout << std::endl;
 }
 
@@ -113,31 +144,10 @@ int main(void)
     std::ifstream file("input.txt");
     std::string content;
     file >> content;
-    std::cout << "Line len: " << content.size() << std::endl; //DEBUGINFO: check if line ends with a file or emtpy space
-    int idx = 0;
-    int file_idx = 0;
-    Line line;
-    while (idx < content.size())
-    {
-        s_info new_block;
-        new_block.value = content[idx] - 48;
-        if (idx % 2 == 0)
-        {
-            new_block.file_idx = file_idx;
-            new_block.type = FILE_;
-            file_idx++;
-        }
-        else
-        {
-            new_block.file_idx = -1;
-            new_block.type = SPACE_;
-        }
-        line.push_back(new_block);
-        idx++;
-    }
-    reorganize_line(line);
-    create_dotmap(line);
+    add_blocks_to_line(content);
+    reorganize_line();
+    create_dotmap();
     add_up_dotmap();
-    // print_dotmap();
     std::cout << res << std::endl;
+    //print_dotmap();
 }

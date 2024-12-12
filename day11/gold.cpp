@@ -6,7 +6,7 @@
 /*   By: mhuszar <mhuszar@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 11:21:47 by mhuszar           #+#    #+#             */
-/*   Updated: 2024/12/11 23:57:22 by mhuszar          ###   ########.fr       */
+/*   Updated: 2024/12/12 02:06:42 by mhuszar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,11 @@ size_t res = 0;
 
 #define ITER 75
 
-size_t numbers[10][76] = {0};
+size_t numbers[10][ITER + 1] = {0};
 
 static inline void __attribute__ ((always_inline)) jmp_zeroes()
 {
-    int n = 75;
+    int n = ITER;
     while (n > 1)
     {
         numbers[1][n - 1] += numbers[0][n];
@@ -41,7 +41,7 @@ static inline void __attribute__ ((always_inline)) jmp_zeroes()
 
 static inline void __attribute__ ((always_inline)) jmp_ones()
 {
-    int n = 75;
+    int n = ITER;
     while (n >= 0)
     {
         switch (n)
@@ -69,7 +69,7 @@ static inline void __attribute__ ((always_inline)) jmp_ones()
 
 static inline void __attribute__ ((always_inline)) jmp_twos()
 {
-    int n = 75;
+    int n = ITER;
     while (n >= 0)
     {
         switch (n)
@@ -97,7 +97,7 @@ static inline void __attribute__ ((always_inline)) jmp_twos()
 
 static inline void __attribute__ ((always_inline)) jmp_threes()
 {
-    int n = 75;
+    int n = ITER;
     while (n >= 0)
     {
         switch (n)
@@ -126,7 +126,7 @@ static inline void __attribute__ ((always_inline)) jmp_threes()
 
 static inline void __attribute__ ((always_inline)) jmp_fours()
 {
-    int n = 75;
+    int n = ITER;
     while (n >= 0)
     {
         switch (n)
@@ -155,7 +155,7 @@ static inline void __attribute__ ((always_inline)) jmp_fours()
 
 static inline void __attribute__ ((always_inline)) jmp_fives()
 {
-    int n = 75;
+    int n = ITER;
     while (n >= 0)
     {
         switch (n)
@@ -190,7 +190,7 @@ static inline void __attribute__ ((always_inline)) jmp_fives()
 
 static inline void __attribute__ ((always_inline)) jmp_sixes()
 {
-    int n = 75;
+    int n = ITER;
     while (n >= 0)
     {
         switch (n)
@@ -227,7 +227,7 @@ static inline void __attribute__ ((always_inline)) jmp_sixes()
 
 static inline void __attribute__ ((always_inline)) jmp_sevens()
 {
-    int n = 75;
+    int n = ITER;
     while (n >= 0)
     {
         switch (n)
@@ -264,7 +264,7 @@ static inline void __attribute__ ((always_inline)) jmp_sevens()
 
 static inline void __attribute__ ((always_inline)) jmp_eights()
 {
-    int n = 75;
+    int n = ITER;
     while (n >= 0)
     {
         switch (n)
@@ -300,7 +300,7 @@ static inline void __attribute__ ((always_inline)) jmp_eights()
 
 static inline void __attribute__ ((always_inline)) jmp_nines()
 {
-    int n = 75;
+    int n = ITER;
     while (n >= 0)
     {
         switch (n)
@@ -338,7 +338,7 @@ static inline void __attribute__ ((always_inline)) jmp_nines()
 static inline bool __attribute__ ((always_inline)) avx()
 {
     const size_t *data = (const size_t *)numbers;
-    for (size_t i = 0; i < 760; i += 4)
+    for (size_t i = 0; i < (ITER + 1) * 10; i += 4)
     {
         bool result = false;
         __asm__ (
@@ -347,7 +347,7 @@ static inline bool __attribute__ ((always_inline)) avx()
             "setnz %%cl;"
             : "=c" (result)
             : "r" (data + i)
-            : "ymm0"
+            : "ymm0", "memory"
         );
         if (result)
             return false;

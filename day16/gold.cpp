@@ -6,7 +6,7 @@
 /*   By: mhuszar <mhuszar@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 16:42:26 by mhuszar           #+#    #+#             */
-/*   Updated: 2024/12/16 22:54:16 by mhuszar          ###   ########.fr       */
+/*   Updated: 2024/12/16 23:15:30 by mhuszar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,5 +215,6 @@ int main(int ac, char** av)
 
     std::set<std::pair<int, int>> unique_elements(sol.begin(), sol.end());
 
-    std::cout << unique_elements.size() << std::endl;
+    std::cout << "SOLUTION FOR PART1: " << res << std::endl;
+    std::cout << "SOLUTION FOR PART2: " << unique_elements.size() << std::endl;
 }

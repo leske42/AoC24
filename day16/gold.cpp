@@ -6,7 +6,7 @@
 /*   By: mhuszar <mhuszar@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 16:42:26 by mhuszar           #+#    #+#             */
-/*   Updated: 2024/12/16 22:45:33 by mhuszar          ###   ########.fr       */
+/*   Updated: 2024/12/16 22:54:16 by mhuszar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@
 #include <utility>
 #include <map>
 #include <set>
-#include <algorithm>
 
 typedef std::vector<std::vector<char>> Grid;
 Grid grid;
@@ -53,7 +52,8 @@ typedef std::pair<std::pair<size_t /*cost of route*/, Coordvec>, Player> Route;
 Route old_route;
 typedef std::multimap<std::pair<size_t /*cost of route*/, Coordvec>, Player> Routes;
 Routes routes;
-typedef std::set<size_t> Visited;
+
+typedef std::map<size_t/*hash*/, size_t/*cost*/> Visited;
 Visited visited;
 
 size_t hash_route(Route& to_hash)
@@ -66,10 +66,10 @@ void rotate_right()
     Route new_route = old_route;
     new_route.second.dir = (Direction)((new_route.second.dir + 1) % 4);
     new_route.first.first += 1000;
-    if (!std::binary_search(visited.begin(), visited.end(), hash_route(new_route)))
+    if (visited.find(hash_route(new_route)) == visited.end() || visited[hash_route(new_route)] == new_route.first.first)
     {
         routes.insert(new_route);
-        visited.insert(hash_route(new_route));
+        visited[hash_route(new_route)] = new_route.first.first;
     }
 }
 
@@ -80,10 +80,10 @@ void rotate_left()
     if (new_route.second.dir == LIMBO)
         new_route.second.dir = LEFT;
     new_route.first.first += 1000;
-    if (!std::binary_search(visited.begin(), visited.end(), hash_route(new_route)))
+    if (visited.find(hash_route(new_route)) == visited.end() || visited[hash_route(new_route)] == new_route.first.first)
     {
         routes.insert(new_route);
-        visited.insert(hash_route(new_route));
+        visited[hash_route(new_route)] = new_route.first.first;
     }
 }
 
@@ -135,10 +135,10 @@ void move()
         default:
             throw std::runtime_error("wtf");
     }
-    if (!std::binary_search(visited.begin(), visited.end(), hash_route(new_route)))
+    if (visited.find(hash_route(new_route)) == visited.end() || visited[hash_route(new_route)] == new_route.first.first)
     {
         routes.insert(new_route);
-        visited.insert(hash_route(new_route));
+        visited[hash_route(new_route)] = new_route.first.first;
     }
 }
 
@@ -163,13 +163,9 @@ static inline bool __attribute__ ((always_inline)) algo()
         {
             res = old_route.first.first;
             sol.insert(sol.end(), old_route.first.second.begin(), old_route.first.second.end());
-            std::cout << "COST IS: " << res << std::endl;
         }
         else
-        {
-            std::cout << "COST IS NOW: " << old_route.first.first << std::endl;
             return true;
-        }
     }
     else
         update_possible_routes();
@@ -221,39 +217,3 @@ int main(int ac, char** av)
 
     std::cout << unique_elements.size() << std::endl;
 }
-
-// std::ostream& operator<<(std::ostream &os, Direction& dir)
-// {
-//     switch (dir)
-//     {
-//         case UP:
-//             std::cout << "UP";
-//             break;
-//         case DOWN:
-//             std::cout << "DOWN";
-//             break;
-//         case LEFT:
-//             std::cout << "LEFT";
-//             break;
-//         case RIGHT:
-//             std::cout << "RIGHT";
-//             break;
-//         default:
-//             throw std::runtime_error("wtf");
-//     }
-//     return os;
-// }
-
-// void display_all_map()
-// {
-//     Routes::iterator it = routes.begin();
-//     int idx = 0;
-//     while (it != routes.end())
-//     {
-//         std::cout << "ROUTE NUMBER " << idx << " : COST: " << it->first;
-//         std::cout << " POSITION: Y: " << it->second.y << " X: ";
-//         std::cout << it->second.x << " DIR: " << it->second.dir << std::endl;
-//         it++;
-//         idx++;
-//     }
-// }

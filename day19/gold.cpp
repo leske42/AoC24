@@ -6,38 +6,38 @@
 /*   By: mhuszar <mhuszar@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 10:17:37 by mhuszar           #+#    #+#             */
-/*   Updated: 2024/12/19 11:07:21 by mhuszar          ###   ########.fr       */
+/*   Updated: 2024/12/19 20:25:48 by mhuszar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <cstddef>
 #include <fstream>
 #include <iostream>
 #include <vector>
 #include <string>
 
 std::vector<std::string> patterns;
-int res = 0;
+size_t res;
 
-void check_matches(int from, int idx, std::string& pattern)
+void check_matches(std::string& pattern)
 {
-    //int prev_idx = 0;
-    while (idx < patterns.size())
+    std::vector<size_t> ways_till_end(pattern.size() + 1, 0);
+    int idx = pattern.size() - 1;
+    ways_till_end[idx + 1] = 1;
+    while (idx >= 0)
     {
-        if (pattern.compare(from, patterns[idx].size(), patterns[idx]) == 0)
+        for (int subpat = 0; subpat < patterns.size(); subpat++)
         {
-            //if (pattern == "brgr")
-            //    std::cout << "called with vals " << from << " " << idx << " " << pattern << " " << patterns[idx] << std::endl;
-            if (from == pattern.size() - patterns[idx].size())
+            if (idx + patterns[subpat].size() <= pattern.size()
+                && pattern.compare(idx, patterns[subpat].size(), patterns[subpat]) == 0)
             {
-                res++;
-                return ;
+                // std::cout << "SUBPAT " << patterns[subpat] << " fits into " << pattern << " from index " << idx << std::endl;
+                ways_till_end[idx] += ways_till_end[idx + patterns[subpat].size()];
             }
-            check_matches(from, idx + 1, pattern);
-            check_matches(from + patterns[idx].size(), 0, pattern);
-            return ;
         }
-        idx++;
+        idx--;
     }
+    res += ways_till_end[0];
     return;
 }
 
@@ -50,19 +50,20 @@ void parse_input()
         infile >> pattern;
         if (pattern == "HEHE")
             break;
-        //std::cout << pattern << std::endl;
         pattern.pop_back();
         patterns.push_back(pattern);
     }
+    std::getline(infile, pattern);
     while (!infile.eof())
     {
         std::getline(infile, pattern);
-        check_matches(0, 0, pattern);
+        check_matches(pattern);
     }
     std::cout << res << std::endl;
 }
 
 int main(void)
 {
+    res = 0;
     parse_input();
 }

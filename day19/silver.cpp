@@ -6,7 +6,7 @@
 /*   By: mhuszar <mhuszar@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 10:17:37 by mhuszar           #+#    #+#             */
-/*   Updated: 2024/12/19 10:46:40 by mhuszar          ###   ########.fr       */
+/*   Updated: 2024/12/19 20:26:47 by mhuszar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,22 +20,14 @@ int res = 0;
 
 bool check_matches(int from, int idx, std::string& pattern)
 {
-    //std::cout << "called with vals " << from << " " << idx << " " << pattern << std::endl;
-    //int prev_idx = 0;
     if (from == pattern.size())
         return true;
     while (idx < patterns.size())
     {
         if (pattern.compare(from, patterns[idx].size(), patterns[idx]) == 0)
         {
-            /*if (idx == patterns.size() - 1)
-            {
-                if (pattern == "bbrgwb")
-                    std::cout << "last match: " << patterns[idx] << std::endl;
-                return (true);
-            }
-            else*/
-            return (check_matches(from, idx + 1, pattern) || check_matches(from + patterns[idx].size(), 0, pattern));
+            return (check_matches(from, idx + 1, pattern)
+                || check_matches(from + patterns[idx].size(), 0, pattern));
         }
         idx++;
     }
@@ -51,7 +43,6 @@ void parse_input()
         infile >> pattern;
         if (pattern == "HEHE")
             break;
-        //std::cout << pattern << std::endl;
         pattern.pop_back();
         patterns.push_back(pattern);
     }
@@ -59,10 +50,7 @@ void parse_input()
     {
         std::getline(infile, pattern);
         if (check_matches(0, 0, pattern))
-        {
-            //std::cout << pattern << std::endl;
             res++;
-        }
     }
     std::cout << res << std::endl;
 }

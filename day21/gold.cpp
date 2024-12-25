@@ -6,13 +6,11 @@
 /*   By: mhuszar <mhuszar@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 13:57:00 by mhuszar           #+#    #+#             */
-/*   Updated: 2024/12/25 17:36:47 by mhuszar          ###   ########.fr       */
+/*   Updated: 2024/12/25 17:44:07 by mhuszar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <fstream>
 #include <iostream>
-#include <vector>
 #include <map>
 #include <string>
 #include <cstdint>
@@ -140,8 +138,6 @@ uint16_t calc_key(char from, char to)
 {
     return (from << 8 | to);
 }
-
-char last_char[25];
 
 size_t vectorize(char from, char to, int level)
 {

@@ -6,7 +6,7 @@
 /*   By: mhuszar <mhuszar@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 13:57:00 by mhuszar           #+#    #+#             */
-/*   Updated: 2024/12/25 17:44:07 by mhuszar          ###   ########.fr       */
+/*   Updated: 2024/12/25 18:44:53 by mhuszar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,19 +27,14 @@ std::string choose_val(char from, char to)
         {
             case '^':
                 return ("A");
-                break;
             case '<':
                 return ("v<A");
-                break;
             case 'v':
                 return ("vA");
-                break;
             case '>':
                 return ("v>A");
-                break;
             case 'A':
                 return (">A");
-                break;
         }
     }
 
@@ -49,19 +44,14 @@ std::string choose_val(char from, char to)
         {
             case '^':
                 return (">^A");
-                break;
             case '<':
                 return ("A");
-                break;
             case 'v':
                 return (">A");
-                break;
             case '>':
                 return (">>A");
-                break;
             case 'A':
                 return (">>^A");
-                break;
         }
     }
 
@@ -71,19 +61,14 @@ std::string choose_val(char from, char to)
         {
             case '^':
                 return ("^A");
-                break;
             case '<':
                 return ("<A");
-                break;
             case 'v':
                 return ("A");
-                break;
             case '>':
                 return (">A");
-                break;
             case 'A':
                 return ("^>A");
-                break;
         }
     }
 
@@ -93,19 +78,14 @@ std::string choose_val(char from, char to)
         {
             case '^':
                 return ("<^A");
-                break;
             case '<':
                 return ("<<A");
-                break;
             case 'v':
                 return ("<A");
-                break;
             case '>':
                 return ("A");
-                break;
             case 'A':
                 return ("^A");
-                break;
         }
     }
 
@@ -115,19 +95,14 @@ std::string choose_val(char from, char to)
         {
             case '^':
                 return ("<A");
-                break;
             case '<':
                 return ("v<<A");
-                break;
             case 'v':
                 return ("<vA");
-                break;
             case '>':
                 return ("vA");
-                break;
             case 'A':
                 return ("A");
-                break;
         }
     }
     throw ;
@@ -156,6 +131,15 @@ size_t vectorize(char from, char to, int level)
     return ret;
 }
 
+/*
+L* has two main rules:
+Rule of Grouping dictates that if you can execute similar moves consecutively, then do so (so as to be able to spam A later)
+Rule of Left dictates that if you can press two keys in any order, give precedence to the one with the leftmost position
+This is because on 1 depth more you will have to move left to reach that one -->
+This means on 2 depths more you will have to reach the "<" ("left") button -->
+And you want to do that before anything else (from the position of "A") so you can group your moves ("v<<")
+So Rule of Left serves Rule of Grouping
+*/
 int main(void)
 {
     size_t res = 0;
